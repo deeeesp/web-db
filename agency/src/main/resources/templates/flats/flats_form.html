@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>new worker</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <div class="collapse navbar-collapse" id="topNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/flats/getAll}">Flats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/deals/getAll}">Deals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clients/getAll}">Clients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/workers/getAll}">Workers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/wishes/getAll}">Wishes</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</head>
+<body>
+<div class="my-3">
+    <form th:action="@{/flats/save}" method="post" enctype="multipart/form-data" th:object="${flat}"
+          style="max-width: 550px; margin: 0 auto">
+        <h2 class="text-center">[[${pageTitle}]]</h2>
+
+        <div class="p-3">
+
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="id">Id</label>
+                <div class="col-sm-9">
+                    <input type="text" th:field="${flat.id}" required minlength="1" maxlength="128" class="form-control"
+                           id="id" />
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="clId">Worker id</label>
+                <div class="col-sm-9">
+                    <input type="number" th:field="${flat.worker.id}" required minlength="1" maxlength="128" class="form-control"
+                           id="clId" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="floor">Cost</label>
+                <div class="col-sm-9">
+                    <input type="number" th:field="${flat.floor}" required minlength="1" maxlength="2" class="form-control"
+                           id="floor" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="meters">Meters</label>
+                <div class="col-sm-9">
+                    <input type="number" th:field="${flat.meters}" required minlength="2" maxlength="4" class="form-control"
+                           id="meters" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="rooms">Rooms</label>
+                <div class="col-sm-9">
+                    <input type="number" th:field="${flat.rooms}" required minlength="1" maxlength="2" class="form-control"
+                           id="rooms" />
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2" />
+                <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnCancel").on("click", function () {
+            window.location = "[[@{/flats/getAll}]]";
+        });
+    });
+</script>
+
+</body>
+</html>

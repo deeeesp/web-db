@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="my-3">
+    <form th:action="@{/tests/save}" method="post" enctype="multipart/form-data" th:object="${tests}"
+          style="max-width: 550px; margin: 0 auto">
+
+
+        <div class="p-3">
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="title">Title</label>
+                <div class="col-sm-9">
+                    <input type="text" th:field="${tests.name}" required minlength="2" maxlength="128"
+                           class="form-control"
+                           id="title"/>
+                </div>
+            </div>
+
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2"/>
+                <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnCancel").on("click", function () {
+            window.location = "[[@{/tutorials}]]";
+        });
+    });
+</script>
+
+</body>
+</html>
