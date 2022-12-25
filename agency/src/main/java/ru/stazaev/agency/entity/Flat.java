@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
+
 @Entity
 @Table(name = "flats")
 public class Flat {
@@ -23,6 +25,9 @@ public class Flat {
     @JoinColumn(name = "id_worker")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Worker worker;
+
+    @OneToMany(mappedBy = "flat")
+    private List<Deal> deals;
 
     public Flat(int floor, int meters, int rooms, Worker worker) {
         this.floor = floor;

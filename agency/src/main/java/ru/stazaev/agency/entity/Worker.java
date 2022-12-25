@@ -23,6 +23,9 @@ public class Worker {
     @OneToMany(mappedBy = "worker")
     private List<Flat> flats;
 
+    @OneToMany(mappedBy = "worker")
+    private List<Deal> deals;
+
     public Worker(String name, int telephone, List<Flat> flats) {
         this.name = name;
         this.telephone = telephone;

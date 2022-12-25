@@ -26,7 +26,7 @@ public class FlatController {
 
     @Autowired
     private WorkerService workerService;
-
+/*
     @GetMapping("/getAll")
     public String getAll(Model model,@Param("keyword") String keyword){
         List<Flat> flats = new ArrayList<>();
@@ -42,23 +42,34 @@ public class FlatController {
         return "flats/flats";
     }
 
+
+ */
+
     @GetMapping("/getAll/{page}")
     public String getAll(Model model,@Param("keyword") String keyword,@PathVariable int page){
         List<Flat> flats = new ArrayList<>();
         if (keyword == null) {
-            flatService.getAll().forEach(flats::add);
+            flats.addAll(flatService.getAll());
         } else {
-            flatService.getByWorkerId(Long.valueOf(keyword)).forEach(flats::add);
+            flats.addAll(flatService.getByWorkerId(Long.parseLong(keyword)));
             model.addAttribute("keyword", keyword);
         }
         List<Flat> list = new ArrayList<>();
-        for (int i = page; i < page+30; i++) {
-            list.add(flats.get(page));
+        int start = (page-1)*30;
+        int end = start+30;
+        if (end>flats.size()){
+            end = flats.size();
+        }
+        for (int i = start; i < end; i++) {
+            list.add(flats.get(i));
         }
         model.addAttribute("flats", list);
         model.addAttribute("page",page+1);
+        model.addAttribute("prevpage",page-1);
         return "flats/flats";
     }
+
+
 
     @GetMapping("/get")
     public String getAll(Model model){
@@ -102,13 +113,13 @@ public class FlatController {
         } catch (Exception e) {
             redirectAttributes.addAttribute("message", e.getMessage());
         }
-        return "redirect:/flats/getAll";
+        return "redirect:/flats/getAll/1";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteById(@PathVariable long id){
         flatService.deleteById(id);
-        return "redirect:/flats/getAll";
+        return "redirect:/flats/getAll/1";
     }
 
     @GetMapping("/update/{id}")
@@ -123,7 +134,7 @@ public class FlatController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
-            return "redirect:/flats/getAll";
+            return "redirect:/flats/getAll/1";
         }
     }
 }

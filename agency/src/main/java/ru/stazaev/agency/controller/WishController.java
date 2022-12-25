@@ -28,18 +28,30 @@ public class WishController {
     @Autowired
     private ClientService clientService;
 
-    @GetMapping("/getAll")
-    public String getAll(Model model,@Param("keyword") String keyword){
+    @GetMapping("/getAll/{page}")
+    public String getAll(Model model,@Param("keyword") String keyword,@PathVariable int page){
         List<Wish> wishes = new ArrayList<>();
-
+        System.out.println(keyword);
         if (keyword == null) {
             wishService.getAll().forEach(wishes::add);
         } else {
             wishService.getByClientId(Long.valueOf(keyword)).forEach(wishes::add);
             model.addAttribute("keyword", keyword);
         }
+        System.out.println(wishes.size());
+        List<Wish> list = new ArrayList<>();
 
-        model.addAttribute("wishes", wishes);
+        int start = (page-1)*30;
+        int end = start+30;
+        if (end>wishes.size()){
+            end = wishes.size();
+        }
+        for (int i = start; i < end; i++) {
+            list.add(wishes.get(i));
+        }
+        model.addAttribute("wishes", list);
+        model.addAttribute("page",page+1);
+        model.addAttribute("prevpage",page-1);
         return "wishes/wishes";
     }
 
@@ -86,13 +98,13 @@ public class WishController {
         } catch (Exception e) {
             redirectAttributes.addAttribute("message", e.getMessage());
         }
-        return "redirect:/wishes/getAll";
+        return "redirect:/wishes/getAll/1";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteById(@PathVariable long id){
         wishService.deleteById(id);
-        return "redirect:/wishes/getAll";
+        return "redirect:/wishes/getAll/1";
     }
 
 
@@ -108,7 +120,7 @@ public class WishController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
-            return "redirect:/wishes/getAll";
+            return "redirect:/wishes/getAll/1";
         }
     }
 }

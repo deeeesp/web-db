@@ -1,6 +1,8 @@
 package ru.stazaev.agency.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "deals")
@@ -11,29 +13,33 @@ public class Deal {
     @Column(name = "id_deal")
     private long id;
 
-    @Column(name = "id_worker")
-    private long workerId;
+//    @Column(name = "id_worker")
+//    private long workerId;
 
-    @Column(name = "id_flat")
-    private long flatId;
+//    @Column(name = "id_flat")
+//    private long flatId;
 
-    @Column(name = "id_client")
-    private long clientId;
+//    @Column(name = "id_client")
+//    private long clientId;
 
     private String type;
 
     private int cost;
 
-    public Deal(long workerId, long flatId, long clientId, String type, int cost) {
-        this.workerId = workerId;
-        this.flatId = flatId;
-        this.clientId = clientId;
-        this.type = type;
-        this.cost = cost;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_worker")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Worker worker;
 
-    public Deal() {
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_flat")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Flat flat;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_client")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Client client;
 
     public long getId() {
         return id;
@@ -41,30 +47,6 @@ public class Deal {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getWorkerId() {
-        return workerId;
-    }
-
-    public void setWorkerId(long workerId) {
-        this.workerId = workerId;
-    }
-
-    public long getFlatId() {
-        return flatId;
-    }
-
-    public void setFlatId(long flatId) {
-        this.flatId = flatId;
-    }
-
-    public long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(long clientId) {
-        this.clientId = clientId;
     }
 
     public String getType() {
@@ -83,15 +65,39 @@ public class Deal {
         this.cost = cost;
     }
 
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    public Flat getFlat() {
+        return flat;
+    }
+
+    public void setFlat(Flat flat) {
+        this.flat = flat;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     @Override
     public String toString() {
         return "Deal{" +
                 "id=" + id +
-                ", workerId=" + workerId +
-                ", flatId=" + flatId +
-                ", clientId=" + clientId +
                 ", type='" + type + '\'' +
                 ", cost=" + cost +
+                ", worker=" + worker +
+                ", flat=" + flat +
+                ", client=" + client +
                 '}';
     }
 }

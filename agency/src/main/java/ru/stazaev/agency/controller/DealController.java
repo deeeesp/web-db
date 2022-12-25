@@ -24,8 +24,8 @@ public class DealController {
     @Autowired
     private DealService dealService;
 
-    @GetMapping("/getAll")
-    public String getAll(Model model,@Param("keyword") String keyword){
+    @GetMapping("/getAll/{page}")
+    public String getAll(Model model,@Param("keyword") String keyword,@PathVariable int page){
         List<Deal> deals = new ArrayList<>();
         System.out.println(keyword);
         if (keyword == null) {
@@ -35,8 +35,22 @@ public class DealController {
             dealService.getByWorkerIdOrClientIdOrFlatId(Long.valueOf(s[0]),Long.valueOf(s[1]),Long.valueOf(s[2])).forEach(deals::add);
             model.addAttribute("keyword", keyword);
         }
+        List<Deal> list = new ArrayList<>();
+        int start = (page-1)*30;
+        int end = start+30;
+        if (end>deals.size()){
+            end = deals.size();
+        }
+        System.out.println(start);
+        System.out.println(end);
+        for (int i = start; i < end; i++) {
+            list.add(deals.get(i));
+        }
 
-        model.addAttribute("deals", deals);
+        model.addAttribute("deals", list);
+
+        model.addAttribute("page",page+1);
+        model.addAttribute("prevpage",page-1);
         return "deals/deals";
     }
 
@@ -51,8 +65,8 @@ public class DealController {
             if (i%5==0){
                 s = "rent";
             }
-            Deal deal = new Deal(wI,fI,cI,s,cost);
-            dealService.save(deal);
+//            Deal deal = new Deal(wI,fI,cI,s,cost);
+//            dealService.save(deal);
         }
 //        model.addAttribute("flats",dealService.getAll());
         return "flats/flats";
@@ -61,6 +75,7 @@ public class DealController {
     @GetMapping("/get/{id}")
     public String getById(Model model, @PathVariable long id){
         model.addAttribute("deals",dealService.getById(id));
+        System.out.println(dealService.getById(id));
         return "deals/deals";
     }
 
@@ -80,13 +95,13 @@ public class DealController {
         } catch (Exception e) {
             redirectAttributes.addAttribute("message", e.getMessage());
         }
-        return "redirect:/deals/getAll";
+        return "redirect:/deals/getAll/1";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteById(@PathVariable long id){
         dealService.deleteById(id);
-        return "redirect:/deals/getAll";
+        return "redirect:/deals/getAll/1";
     }
 
     @GetMapping("/update/{id}")
@@ -101,7 +116,7 @@ public class DealController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
-            return "redirect:/deals/getAll";
+            return "redirect:/deals/getAll/1";
         }
     }
 

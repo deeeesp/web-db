@@ -22,6 +22,9 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Wish> wishes;
 
+    @OneToMany(mappedBy = "client")
+    private List<Deal> deals;
+
     public long getId() {
         return id;
     }

@@ -31,11 +31,17 @@ public class WorkerController {
         System.out.println(page);
         List<Worker> workers = new ArrayList<>();
         List<Worker> all = workerService.getAll();
-        for (int i = page; i < page+1; i++) {
+        int start = (page-1)*30;
+        int end = start+30;
+        if (end>all.size()){
+            end = all.size();
+        }
+        for (int i = start; i < end; i++) {
             workers.add(all.get(i));
         }
         model.addAttribute("workers",workers);
         model.addAttribute("page",page+1);
+        model.addAttribute("prevpage",page-1);
         return "workers/workers";
     }
 
@@ -71,7 +77,7 @@ public class WorkerController {
     @GetMapping("/delete/{id}")
     public String deleteById(@PathVariable long id){
         workerService.deleteById(id);
-        return "redirect:/workers/getAll";
+        return "redirect:/workers/getAll/1";
     }
 
     @GetMapping("/update/{id}")
@@ -85,7 +91,7 @@ public class WorkerController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
-            return "redirect:/workers/getAll";
+            return "redirect:/workers/getAll/1";
         }
     }
 

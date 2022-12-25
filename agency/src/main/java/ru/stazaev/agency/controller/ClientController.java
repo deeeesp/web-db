@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.stazaev.agency.entity.Client;
 import ru.stazaev.agency.entity.Wish;
+import ru.stazaev.agency.entity.Worker;
 import ru.stazaev.agency.service.ClientService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/clients")
@@ -19,9 +23,22 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @GetMapping("/getAll")
-    public String getAll(Model model){
-        model.addAttribute("clients",clientService.getAll());
+    @GetMapping("/getAll/{page}")
+    public String getAll(Model model,@PathVariable int page){
+        List<Client> clients = new ArrayList<>();
+        List<Client> all = clientService.getAll();
+
+        int start = (page-1)*30;
+        int end = start+30;
+        if (end>all.size()){
+            end = all.size();
+        }
+        for (int i = start; i < end; i++) {
+            clients.add(all.get(i));
+        }
+        model.addAttribute("clients",clients);
+        model.addAttribute("page",page+1);
+        model.addAttribute("prevpage",page-1);
         return "clients/clients";
     }
 
@@ -46,13 +63,13 @@ public class ClientController {
         } catch (Exception e) {
             redirectAttributes.addAttribute("message", e.getMessage());
         }
-        return "redirect:/clients/getAll";
+        return "redirect:/clients/getAll/1";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteById(@PathVariable long id){
         clientService.deleteById(id);
-        return "redirect:/clients/getAll";
+        return "redirect:/clients/getAll/1";
     }
 
     @GetMapping("/update/{id}")
@@ -67,7 +84,7 @@ public class ClientController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
-            return "redirect:/clients/getAll";
+            return "redirect:/clients/getAll/1";
         }
     }
 }
